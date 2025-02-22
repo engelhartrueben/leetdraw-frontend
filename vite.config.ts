@@ -12,7 +12,11 @@ export default defineConfig(({ command, mode }) => {
 		  server: {
 			  headers: {
 				  "X-Content-Type-Options": "nosniff",
+			  },
+			  proxy: {
+			      '/api': 'http://100.92.75.123:8000',
 			  }
+			  
 		  },
 		  define: {
 			  __VITE_BACKEND_URL__: JSON.stringify(env.VITE_BACKEND_URL),
