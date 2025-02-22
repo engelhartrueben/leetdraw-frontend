@@ -2,7 +2,7 @@
 
 const post = async (path: string, data = {}: any ) => {
 	let url: string;
-	if(__VITE_BACK_PORT__) {
+	if(__VITE_BACKEND_PORT__) {
 		url = `http://${__VITE_BACKEND_URL__}:${__VITE_BACKEND_PORT__}`;
 	} else {
 		url = `http://${__VITE_BACKEND_URL__}`;
