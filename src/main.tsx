@@ -6,6 +6,10 @@ import theme from './styles/theme';
 
 import { MantineProvider, createTheme } from "@mantine/core";
 
+window.process = {
+	cwd: () => '/'
+}
+
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <MantineProvider theme={theme}>

@@ -3,6 +3,8 @@ import { React } from 'react';
 import { Button, Checkbox, Group, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
+import c from '../server/connectors';
+
 const RegisterForm = () => {
 	const form = useForm({
 		mode: 'uncontrolled',
@@ -12,15 +14,15 @@ const RegisterForm = () => {
 		},
 
 		validate: {
-			// password and username 32 char limit
-			username: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid Email'),
-			password: (value) => (/^[a-zA-Z]+$/).test(value) ? null : 'Invalid Password'
+			// TODO: password and username 32 char limit
+			username: (value) => (/^[a-zA-Z0-9]+$/.test(value) ? null : 'Invalid User'),
+			password: (value) => (/^[a-zA-Z0-9]+$/.test(value) ? null : 'Invalid Password')
 		},
 	});
 
 	return (
 		<>
-		<form onSubmit={(form.onSubmit((values) => console.log(values)))} >
+		<form onSubmit={(form.onSubmit((values) => c.post("registration",values)))}>
 			<TextInput
 				label="Username"
 				placeholder="Your Username"
@@ -28,7 +30,7 @@ const RegisterForm = () => {
 				{...form.getInputProps('username')}
 			></TextInput>
 			<TextInput
-				lable="Password"
+				label="Password"
 				placeholder="Your Password"
 				key={form.key('password')}
 				{...form.getInputProps('password')}
