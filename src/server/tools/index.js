@@ -5,5 +5,5 @@ import getLocalAuth from "./getLocalAuth";
 export default {
 	getLocalGameId,
 	getLocalGameStatus,
-	getLocalAuth
+	getLocalAuth,
 }
