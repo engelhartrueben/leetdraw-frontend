@@ -1,13 +1,21 @@
 // const backend = process.env.BACKEND_URL;
 
+// What needs to be under auth/
+// login
+// register
+// get_user
 const post = async (path: string, data = {}: any ) => {
+	if (__VITE_DEBUG_MODE__) console.log("post", path, data);
+
 	let url: string;
 	if(__VITE_BACKEND_PORT__) {
 		url = `http://${__VITE_BACKEND_URL__}:${__VITE_BACKEND_PORT__}`;
 	} else {
 		url = `http://${__VITE_BACKEND_URL__}`;
 	}
+
 	try {
+		url = "http://localhost:5173"
 		const response: string = await fetch(`${url}/${path}`, {
 			method: "POST",
 			headers: {
