@@ -1,4 +1,5 @@
 import { React, Navigate } from "react";
+
 import getLocalAuth from "../server/tools/getLocalAuth";
 import getLocalGameId from "../server/tools/getLocalGameId";
 import c from "../server/connectors";
@@ -16,29 +17,42 @@ interface AuthBody {
 	game_id: string
 }
 
+const WaitingOnGame = () => {
+	return <p>waiting on game</p>;
+}
 
 const Game = () => {
+	localStorage.setItem("has_game", false);
+	
 	let auth: AuthBody = {
 	   	"authorization": getLocalAuth(),
 		"game_id": getLocalGameId(),
 	}
+	console.log(auth);
 	
-	// auth is embedded
+	// if no auth, throw to login screen
 	if (auth["authorization"] == "null") {
-		return <Navigate path="/login" replace />a
+		return <Navigate path="/login" replace />;
+	}
+	
+	// if no game_id, return to main menu
+	if (auth["game_id"] == "null") {
+		return <Navigate path="/menu" replace />;
 	}
 
 	const getGame = (auth) => {
 		if (auth["authorization"] == "null") window.location.reload();
-		const req: GameResponse = c.post("/get_game", auth);
+		// const req: GameResponse = c.post("/get_game", auth);
 
-		// Do somthig
+		// TODO Do something
 	}
 
 	setInterval(getGame, 200, auth);
-
 	return(
-		<h1>Game</h1>
+		<div>
+			<h1>Game</h1>
+			{localStorage.getItem("has_game") == "true" ? <p>we have a game!!!</p> : <p>waiting</p>}
+		</div>
 	);
 }
 

@@ -11,7 +11,7 @@ interface UserInformaton {
 	user_id: string
 }
 
-const Menu = () => {
+const Menu = (props) => {
 	let userInfo: UserInformation;
 	let gameId: "string" = getLocalGameId();
 	let hasGame: boolean | string = getLocalGameStatus();
@@ -84,18 +84,17 @@ const Menu = () => {
 
 	// If gameId, send user to the game screen
 	if (gameId != "null" && hasGame == true) {
-		return <Navigate to="/game" replace />
+		return <Navigate to="/match" replace />
 	}
 	
-	console.log("HERE");
 	return (
 		<div>
 			<h1>1337Draw</h1>
 			<div id="user_information">
-
+				<p>User Information</p>
 			</div>
 			<div id="game_options">
-
+				<p>Game Options</p>
 			</div>
 		</div>
 	);
