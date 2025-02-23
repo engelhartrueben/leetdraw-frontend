@@ -23,7 +23,7 @@ const post = async (path: string, data = {}: any ) => {
 				"Content-type": "application/json",
 			},
 			body: JSON.stringify(data),
-		});
+		})
 		
 		if (!response.ok) {
 			console.error('bad response');
@@ -31,10 +31,9 @@ const post = async (path: string, data = {}: any ) => {
 		}
 
 		const json: string = await response.json();
-
-		if (__VITE_DEBUG_MODE__) console.log(json);
-
-		return JSON.stringify(json); 
+	
+		console.log(JSON.stringify(json));
+		return json; 
 
 		} catch (error) {
 			throw new Error(`post request bad: ${error}`);

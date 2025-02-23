@@ -5,26 +5,23 @@ import { Button, Checkbox, Group, TextInput } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
 import c from '../server/connectors';
+import getLocalAuth from "../server/tools/getLocalAuth";
 
 interface Auth {
 	authorizaiton: string | null
 }
 
-
-
 const LoginForm = () => {
+	// TODO: change login page if user wants to login rather than sign up
 	let wantsToLogIn: boolean = false;
 	let isLoggedin: boolean = false;
 
-	let [auth, setAuth] = useState(localStorage.getItem("auth"))
-
-	useEffect(() => {
-		if(typeof(auth) == "string") {
-			return <Navigate to="/menu" replace />
-		}
-	}, [auth]);
-	   	   
-	// if auth, redirect to Menu page
+	// sets the local auth token to local storage
+	const setToLocalStorage: void = (authToken: string) => localStorage.setItem("auth", authToken.authorization);
+	
+	// gets auth, or null if nothing
+	// UNTESTED	
+	let auth: string = getLocalAuth();
 
 	const form = useForm({
 		mode: 'uncontrolled',
@@ -32,26 +29,26 @@ const LoginForm = () => {
 			username: '',
 			password: ''
 		},
-
 		validate: {
-			// TODO: password and username 32 char limit
 			username: (value) => (/^[a-zA-Z0-9]{1,32}$/.test(value) ? null : 'Invalid User'),
 			password: (value) => (/^[a-zA-Z0-9]{1,32}$/.test(value) ? null : 'Invalid Password'),
 		},
 	});
-
-	return (auth) ? <Navigate to="/menu" replace /> : (
+	
+	return (auth != "null") ? <Navigate to="/menu" replace /> : (
 		<>
 		{/* unsure if this Auth inteface unioned with any is... good */}
 		<form 
 			onSubmit=
 				{
-				form.onSubmit((values) => {
-					const req: Auth = c.post("auth/register", values)
-					if (req.authorization == null) {
-						alert("Bad bad bad");
+				form.onSubmit(async (values) => {
+					const req: Auth = await c.post("auth/register", values);
+					if (__VITE_DEBUG_MODE__) console.log(req);
+					if (!req.ok) {
+						alert("bad bad bad username");
 					} else {
-						auth = req.authorization;	
+						setToLocalStorage(req);
+						window.location.reload();
 					}
 				})
 			}>
