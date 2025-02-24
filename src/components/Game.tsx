@@ -4,6 +4,9 @@ import getLocalAuth from "../server/tools/getLocalAuth";
 import getLocalGameId from "../server/tools/getLocalGameId";
 import c from "../server/connectors";
 
+import QuestionBox from "../containers/QuestionBox"
+import AnswerBox from "../containers/AnswerBox"
+
 // TODO this is so such a guess
 // Verify with cole
 interface GameResponse {
@@ -17,8 +20,30 @@ interface AuthBody {
 	game_id: string
 }
 
+// What does this loading screen look like?
 const WaitingOnGame = () => {
-	return <p>waiting on game</p>;
+	return (
+		<div>
+			<p>Waiting on a Game</p>
+		</div>
+	);
+}
+
+
+// include 
+// QuestionBox
+// AnswerBox
+const GameBox = (props) => {
+	return (
+		<div>
+			<div>
+				<QuestionBox props={props} />
+			</div>
+			<div>
+				<AnswerBox props={props} />
+			</div>
+		</div>
+	);
 }
 
 const Game = () => {
@@ -28,7 +53,6 @@ const Game = () => {
 	   	"authorization": getLocalAuth(),
 		"game_id": getLocalGameId(),
 	}
-	console.log(auth);
 	
 	// if no auth, throw to login screen
 	if (auth["authorization"] == "null") {
@@ -45,13 +69,21 @@ const Game = () => {
 		// const req: GameResponse = c.post("/get_game", auth);
 
 		// TODO Do something
+		// check whether or not there is a game ready, 
+		// if not, continue polling
+		// else has_game is true and we load GameBox
 	}
 
+	const postResults = (auth) => {
+		// auth is probably not correct here
+		const req = c.post("/doesNotExist", auth); 
+
 	setInterval(getGame, 200, auth);
+
 	return(
 		<div>
 			<h1>Game</h1>
-			{localStorage.getItem("has_game") == "true" ? <p>we have a game!!!</p> : <p>waiting</p>}
+			{localStorage.getItem("has_game") == "true" ? <GameBox /> : <WaitingOnGame /> }
 		</div>
 	);
 }
