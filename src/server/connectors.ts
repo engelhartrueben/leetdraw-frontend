@@ -4,7 +4,7 @@
 // login
 // register
 // get_user
-const post = async (path: string, data = {}: any ) => {
+const post = async (path: string, data = {}) => {
 	if (__VITE_DEBUG_MODE__) console.log("post", path, data);
 
 	let url: string;
@@ -16,7 +16,7 @@ const post = async (path: string, data = {}: any ) => {
 
 	try {
 		url = "http://localhost:5173"
-		const response: string = await fetch(`${url}/${path}`, {
+		const response: any = await fetch(`${url}/${path}`, {
 			method: "POST",
 			headers: {
 				"Accept": "application/json",
@@ -30,7 +30,7 @@ const post = async (path: string, data = {}: any ) => {
 			return { "response": 400 };
 		}
 
-		const json: string = await response.json();
+		const json = await response.json();
 	
 		console.log(JSON.stringify(json));
 		return json; 
@@ -50,7 +50,7 @@ const get = async (path: string) => {
 	}
 
 	try {
-		const response: stirng = await fetch(`${url}/${path}`, {
+		const response: string = await fetch(`${url}/${path}`, {
 			method: "GET",
 			headers: {
 				"Accept": "application/json",
@@ -58,12 +58,12 @@ const get = async (path: string) => {
 			},
 		});
 
-		if (!reponse.ok) {
+		if (!response.ok) {
 			console.log('bad response');
 			return { "response": 400 };
 		}
 
-		const json: string = await response.json();
+		const json = await response.json();
 		
 		if (__VITE_DEBUG_MODE__) console.log(json);
 

@@ -1,4 +1,4 @@
-import { React, Navigate } from "react";
+import { Navigate } from "react";
 
 import getLocalAuth from "../server/tools/getLocalAuth";
 import getLocalGameId from "../server/tools/getLocalGameId";
@@ -77,6 +77,7 @@ const Game = () => {
 	const postResults = (auth) => {
 		// auth is probably not correct here
 		const req = c.post("/doesNotExist", auth); 
+	}
 
 	setInterval(getGame, 200, auth);
 

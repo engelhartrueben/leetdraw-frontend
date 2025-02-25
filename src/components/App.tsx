@@ -1,6 +1,13 @@
-import { React, useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
-import containers from "./containers/index";
+import {
+	AnswerBox,
+	GameMenu,
+	LoginScreen,
+	QuestionBox,
+	UserInfo,
+	Header
+} from "./containers/index";
 
 const App = async () => {
 	const [auth, setAuth] = useState("");
@@ -47,10 +54,10 @@ const App = async () => {
 		}
 	}
 
-	// If auth, then show menu
+	// If change in auth, then show menu
 	useEffect(() => {
-
-	}, [auth]);
+		 
+	}, [loggedIn]);
 
 	// When the user logs out, remove the cached auth token,
 	// and clears the state.
@@ -83,7 +90,7 @@ const App = async () => {
 	// checks if auth exists and check if it is of proper length.
 	// TODO check to make sure the auth length is actually 64 lol
 	const hasAuth: boolean = () => {
-		return auth && auth.length() === 64;
+		return auth && auth.length === 64;
 	}
 	
 	// When the user requests a game, they will send a post request to the
@@ -158,7 +165,7 @@ const App = async () => {
 
 	return (
 		<>
-			<p>App</p>
+			<Header userName={userName} />	
 		</>
 	);
 };

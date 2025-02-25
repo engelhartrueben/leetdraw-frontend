@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client'
 import Routes from './Routes';
 import theme from './styles/theme';
 
-import { MantineProvider, createTheme } from "@mantine/core";
+import { MantineProvider } from "@mantine/core";
 
 window.process = {
 	cwd: () => '/'
