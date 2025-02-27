@@ -1,20 +1,24 @@
 import { useState, useEffect } from 'react';
 
-import {
-	AnswerBox,
-	GameMenu,
-	LoginScreen,
-	QuestionBox,
-	UserInfo,
-	Header
-} from "./containers/index";
+import c from "../server/connectors";
 
-const App = async () => {
-	const [auth, setAuth] = useState("");
+import {
+	// AnswerBox,
+	// GameMenu,
+	// LoginScreen,
+	// QuestionBox,
+	// UserInfo,
+	Header
+} from "../containers/index.ts";
+
+// TODO add prop types
+
+const App = async (props: any) => {
+	const [auth, setAuth] = useState<string | null>("");
 	const [loggedIn, setLoggedIn] = useState(false);
 	// hasGame might be redundent
-	const [gameId, setGameId] = useState("");
-	const [hasGame, setHasGame] = useState(false);
+	const [gameId, setGameId] = useState<string | null>("");
+	const [hasGame, setHasGame] = useState<boolean | Promise<boolean> | Promise<any>>(false);
 	const [searching, setSearching] = useState(false);
 	const [poll, setPoll] = useState("");
 
@@ -44,7 +48,8 @@ const App = async () => {
 		// occuring 
 		// TODO verify that the response requires "game_id", and returns
 		// a "hasGame" key
-		setHasGame(await c.post("/game_match", { "authorization": auth, "game_id": gameId })["hasGame"]);
+		const checkForGame = await !!c.post("game_match", { "authorization": auth, "game_id": gameId });
+		setHasGame(checkForGame["game_id"])
 		// useEffect will be used to watch if there is a game ^^^
 		
 		if (!hasGame) {
@@ -63,7 +68,8 @@ const App = async () => {
 	// and clears the state.
 	// This will trigger a useEffect that transfers the user to the log
 	// in screen.
-	const logout: void = () => {
+	// why can't I use void return type here?
+	const logout: any = () => {
 		localStorage.setItem("auth", "");
 		localStorage.setItem("gameId", "");
 		setAuth("");
@@ -89,30 +95,32 @@ const App = async () => {
 	// action. Generally called before making a post request. 
 	// checks if auth exists and check if it is of proper length.
 	// TODO check to make sure the auth length is actually 64 lol
-	const hasAuth: boolean = () => {
+	// why can't I use boolean return type here?
+	const hasAuth: any = () => {
 		return auth && auth.length === 64;
 	}
 	
 	// When the user requests a game, they will send a post request to the
 	// backend. This post request requires auth and game type (calc1, calc2,
 	// chem1, chem2, ...).
-	const getGameLobby: void = async (gameType: string) => {
+	const getGameLobby: any = async (gameType: string) => {
 		// If no auth, log the user out.
 		if (!hasAuth) logout();
 
 		if (!searching)	{
-			console.alert("If you see this, you have bad code");
+			console.error("If you see this, you have bad code");
 		}
 
 		// post to backend to get gameId
 		// TODO actually connect
-		setInterval(() => {
+		let interval = setInterval(async () => {
 			// if we have a gameId, stop the interval
 			// Could do this when we store gameId, but we will see I suppose
 			if (gameId && hasGame) clearInterval(interval);
 
 			// TODO handle server errors in external file
-			// const req = await c.post("init_match", makeAuthBody())["game_id"]); 
+			const req = await c.post("init_match", makeAuthBody()); 
+
 			if (req.response === 400 && !hasAuth()) logout();
 			if (req.response === 500) {
 				alert("SERVER RESPONSE: 500\nPotential issue with the server. Try again later.");
@@ -127,18 +135,27 @@ const App = async () => {
 				setHasGame(true);
 			}
 
-		}, polling.slow)
+		}, pollingRate.slow)
 		
 		// If the server responds with a 400 error, check auth code.
 		// If the server responds with a 500 error, notify the user that there
 		// may be issues with the server.
 	}
 
+	const clearGame = () => {
+		localStorage.setItem("gameId", "");
+		setGameId("");
+		setHasGame(false);
+
+		// Don't love alerts, but whatever.
+		alert("Game has concluded");
+	}
+
 	// polling logic once the user has a gameId. This acts as two fold.
 	// First, waits for the lobby to find a second player.
 	// Two, once a second player has entered, has a key that holds
 	// question information. 
-	const pollGameLobby: void = () => {
+	const pollGameLobby = () => {
 		if (!hasAuth) logout();
 
 		// Check if gameId is in state. 
@@ -151,21 +168,12 @@ const App = async () => {
 			// Checks if the other user has answered the
 			// question successfully
 			// const req = await c.post("/game", auth);
-		}, polling.fast)
-	}
-
-	const clearGame: void = () => {
-		localStorage.setItem("gameId", "");
-		setGameId("");
-		setHasGame(false);
-
-		// Don't love alerts, but whatever.
-		alert("Game has concluded");
+		}, pollingRate.fast)
 	}
 
 	return (
 		<>
-			<Header userName={userName} />	
+			<Header userName={props.userName} />	
 		</>
 	);
 };

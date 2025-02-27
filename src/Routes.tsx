@@ -1,4 +1,4 @@
-import { BrowserRouter, IndexRoute, IndexRedirect, Route, Routes } from "react-router";
+import { BrowserRouter, Route, Routes } from "react-router";
 
 import App from "./components/App";
 
